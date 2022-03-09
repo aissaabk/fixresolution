@@ -1,0 +1,25 @@
+#/bin/bash
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+Red=`tput setaf 1`
+Blue=`tput setaf 3`
+white=`tput setaf 4`
+connectedOutputs=$(xrandr | awk '$2 == "connected"{print $1}')
+echo -e "${Red}recommand size for your screen  x y refresh example :\n${Blue}1600 900 60 ${white}"
+read -p "" resolution
+resol3=$(cvt $resolution| awk '$1 == "Modeline"{print $2}')
+resol0=$(cvt $resolution|grep Modeline)
+echo $resol0
+addmode="--newmode"
+resol1="${resol0/Modeline/"$addmode"}"
+xrandr $resol1
+xrandr --addmode $connectedOutputs $resol3
+xrandr --output $connectedOutputs --mode $resol3
+echo "this script must run as root for make change for bashrc file"
+bashScript="
+xrandr ${resol1}  > /dev/null 2>&1
+xrandr --addmode $connectedOutputs ${resol3}  > /dev/null 2>&1
+xrandr --output ${connectedOutputs} --mode ${resol3}  > /dev/null 2>&1
+  "
+#working for add setting to boot linux os
+
+
